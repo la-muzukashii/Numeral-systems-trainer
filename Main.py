@@ -1,13 +1,13 @@
-import design
+import Form1
 import random
 import sys
-import form2
+import Form2
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
 
 
-class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
+class ExampleApp(QtWidgets.QMainWindow, Form1.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -41,7 +41,7 @@ class ExampleApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
     #   if self.r_sis= "10":
 
 
-class HelpForm(QtWidgets.QMainWindow, form2.Ui_MainWindow2):
+class HelpForm(QtWidgets.QMainWindow, Form2.Ui_MainWindow2):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
