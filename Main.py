@@ -2,6 +2,7 @@ import Form1
 import random
 import sys
 import Form2
+from Help import *
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
@@ -25,7 +26,8 @@ class ExampleApp(QtWidgets.QMainWindow, Form1.Ui_MainWindow):
         if str(self.answer) == str(self.lineEdit.text()):
             pass
         else:
-            self.help_form.setText(self.r_sis)
+            self.help_form.genSol(self.left, self.l_sis, self.r_sis)
+            self.help_form.setText(self.left, self.l_sis, self.r_sis)
             self.help_form.show()
 
     def setTask(self):
@@ -35,26 +37,26 @@ class ExampleApp(QtWidgets.QMainWindow, Form1.Ui_MainWindow):
         self.label_4.setText(str(self.l_sis))
         print(self.answer)
 
-    # def genSol(self):
-    #   self.solution="{}=".format(self.left)
-
-    #   if self.r_sis= "10":
-
 
 class HelpForm(QtWidgets.QMainWindow, Form2.Ui_MainWindow2):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.solution=""
+        self.answer=""
+        
+    def genSol(self, left, l_sis, r_sis):
+       if r_sis == 10:
+           if l_sis == 2 or l_sis == 8:
+               left=str(left)[::-1]
+               self.solution="{first_rank}*{l_sis}^0".format(first_rank=left[0], l_sis=l_sis)
+               for i in range(1,len(str(left))):
+                   self.solution += " + {rank}*{l_sis}^{degree}".format(rank=left[i], l_sis=l_sis, degree = i)
 
-    def setText(self, r_sis):
-        if r_sis == "10":
-            self.body_text.setText("Чтобы перевести число из любой системы\n" +
-                                   "счисления в десятичную, нужно пронумеровать\n" +
-                                   "его разряды, начиная с нулевого, и найти\n" +
-                                   "сумму произведений цифр числа на основание\n" +
-                                   "системы счисления в степени позиции этой цифры.\n")
-
-
+    def setText(self, left, solution, r_sis):
+        self.body_text.setText(to_10.format(left=left, solution=self.solution, answer=self.answer))
+            
+           
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = ExampleApp()
@@ -75,13 +77,13 @@ class Functional:
     @staticmethod
     def to_sis(num, syst):
         if syst == 2:
-            return bin(num).replace('0b', '')
+            return int(bin(num).replace('0b', ''))
         if syst == 8:
-            return oct(num).replace('0o', '')
+            return int(oct(num).replace('0o', ''))
         if syst == 16:
             return hex(num).replace('0x', '')
         if syst == 10:
-            return str(num)
+            return num
 
 
 if __name__ == "__main__":
