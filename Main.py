@@ -1,18 +1,18 @@
-import Form1
 import random
 import sys
-import Form2
-from Help import *
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import pyqtSlot
 
+import HelpWindow
+import MainWindow
+from Help import *
 
-class ExampleApp(QtWidgets.QMainWindow, Form1.Ui_MainWindow):
+
+class ExampleApp(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.help_form = HelpForm()
         self.pushButton.clicked.connect(self.on_check_click)
         self.data = []
 
@@ -26,35 +26,35 @@ class ExampleApp(QtWidgets.QMainWindow, Form1.Ui_MainWindow):
         if str(self.answer) == str(self.lineEdit.text()):
             pass
         else:
-            self.help_form.genSol(self.left, self.l_sis, self.r_sis)
-            self.help_form.setText(self.left, self.l_sis, self.r_sis)
+            self.help_form = HelpForm(self.left, self.l_sys, self.r_sys, self.answer)
             self.help_form.show()
+            
 
     def setTask(self):
-        self.left, self.l_sis, self.answer, self.r_sis = Functional.generate()
+        self.left, self.l_sys, self.answer, self.r_sys = Functional.generate()
         self.label.setText(str(self.left))
-        self.label_2.setText(str(self.r_sis))
-        self.label_4.setText(str(self.l_sis))
+        self.label_2.setText(str(self.r_sys))
+        self.label_4.setText(str(self.l_sys))
         print(self.answer)
 
 
-class HelpForm(QtWidgets.QMainWindow, Form2.Ui_MainWindow2):
-    def __init__(self):
+class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
+    def __init__(self, left, l_sys, r_sys, answer):
         super().__init__()
-        self.setupUi(self)
+        text = self.genSol(left, l_sys, r_sys)
+        self.setupUi(self, to_10.format(left=left, solution=text, answer=answer))
         self.solution=""
         self.answer=""
         
-    def genSol(self, left, l_sis, r_sis):
-       if r_sis == 10:
-           if l_sis == 2 or l_sis == 8:
+    def genSol(self, left, l_sys, r_sys):
+       if r_sys == 10:
+           if l_sys == 2 or l_sys == 8:
                left=str(left)[::-1]
-               self.solution="{first_rank}*{l_sis}^0".format(first_rank=left[0], l_sis=l_sis)
+               self.solution="{first_rank}*{l_sys}^0".format(first_rank=left[0], l_sys=l_sys)
                for i in range(1,len(str(left))):
-                   self.solution += " + {rank}*{l_sis}^{degree}".format(rank=left[i], l_sis=l_sis, degree = i)
+                   self.solution += " + {rank}*{l_sys}^{degree}".format(rank=left[i], l_sys=l_sys, degree = i)
 
-    def setText(self, left, solution, r_sis):
-        self.body_text.setText(to_10.format(left=left, solution=self.solution, answer=self.answer))
+        
             
            
 def main():
@@ -70,12 +70,12 @@ class Functional:
     def generate():
         num = random.randint(0, 255)
         mas = [2, 8, 10, 16]
-        l_sis = random.choice(mas)
-        r_sis = random.choice(list(set(mas) - {l_sis}))
-        return Functional.to_sis(num, l_sis), l_sis, Functional.to_sis(num, r_sis), r_sis
+        l_sys = random.choice(mas)
+        r_sys = random.choice(list(set(mas) - {l_sys}))
+        return Functional.to_sys(num, l_sys), l_sys, Functional.to_sys(num, r_sys), r_sys
 
     @staticmethod
-    def to_sis(num, syst):
+    def to_sys(num, syst):
         if syst == 2:
             return int(bin(num).replace('0b', ''))
         if syst == 8:
