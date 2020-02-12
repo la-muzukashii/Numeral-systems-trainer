@@ -9,7 +9,7 @@ import MainWindow
 from Help import *
 
 
-class ExampleApp(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
+class Main(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -26,9 +26,9 @@ class ExampleApp(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
         if str(self.answer) == str(self.lineEdit.text()):
             pass
         else:
-            self.help_form = HelpForm(self.left, self.l_sys, self.r_sys, self.answer)
+            self.help_form = HelpForm(
+                self.left, self.l_sys, self.r_sys, self.answer)
             self.help_form.show()
-            
 
     def setTask(self):
         self.left, self.l_sys, self.answer, self.r_sys = Functional.generate()
@@ -42,24 +42,25 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
     def __init__(self, left, l_sys, r_sys, answer):
         super().__init__()
         text = self.genSol(left, l_sys, r_sys)
-        self.setupUi(self, to_10.format(left=left, solution=text, answer=answer))
-        self.solution=""
-        self.answer=""
-        
-    def genSol(self, left, l_sys, r_sys):
-       if r_sys == 10:
-           if l_sys == 2 or l_sys == 8:
-               left=str(left)[::-1]
-               self.solution="{first_rank}*{l_sys}^0".format(first_rank=left[0], l_sys=l_sys)
-               for i in range(1,len(str(left))):
-                   self.solution += " + {rank}*{l_sys}^{degree}".format(rank=left[i], l_sys=l_sys, degree = i)
+        self.setupUi(self, to_10.format(
+            left=left, solution=text, answer=answer))
+        self.solution = ""
+        self.answer = ""
 
-        
-            
-           
+    def genSol(self, left, l_sys, r_sys):
+        if r_sys == 10:
+            if l_sys == 2 or l_sys == 8:
+                left = str(left)[::-1]
+                self.solution = "{first_rank}*{l_sys}^0".format(
+                    first_rank=left[0], l_sys=l_sys)
+                for i in range(1, len(str(left))):
+                    self.solution += " + {rank}*{l_sys}^{degree}".format(
+                        rank=left[i], l_sys=l_sys, degree=i)
+
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    window = ExampleApp()
+    window = Main()
     window.show()
     window.setTask()
     app.exec_()
