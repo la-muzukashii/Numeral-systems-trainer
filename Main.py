@@ -19,8 +19,8 @@ class Main(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
     @pyqtSlot()
     def on_check_click(self):
         self.data.append(str(self.answer) == str(self.lineEdit.text()))
-        print(self.data, self.answer, self.lineEdit.text())
-        print(all(self.data))
+        #print(self.data, self.answer, self.lineEdit.text())
+        #print(all(self.data))
         self.lineEdit.clear()
         self.lineEdit.setFocus()
         if str(self.answer) == str(self.lineEdit.text()):
@@ -56,6 +56,7 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
                 for i in range(1, len(str(left))):
                     self.solution += " + {rank}*{l_sys}^{degree}".format(
                         rank=left[i], l_sys=l_sys, degree=i)
+        return self.solution
 
 
 def main():
