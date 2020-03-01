@@ -19,35 +19,41 @@ class Main(QtWidgets.QMainWindow, MainWindow.Ui_MainWindow):
     @pyqtSlot()
     def on_check_click(self):
         self.data.append(str(self.answer) == str(self.lineEdit.text()))
-        #print(self.data, self.answer, self.lineEdit.text())
-        #print(all(self.data))
-        self.lineEdit.clear()
-        self.lineEdit.setFocus()
         if str(self.answer) == str(self.lineEdit.text()):
-            pass
+            self.setTask()
         else:
             self.help_form = HelpForm(
                 self.left, self.l_sys, self.r_sys, self.answer)
+            self.help_form.body_text.setText(self.help_form.solution)
             self.help_form.show()
+        self.lineEdit.setText("")
+        self.lineEdit.setFocus()
 
     def setTask(self):
         self.left, self.l_sys, self.answer, self.r_sys = Functional.generate()
         self.label.setText(str(self.left))
         self.label_2.setText(str(self.r_sys))
         self.label_4.setText(str(self.l_sys))
-        print(self.answer)
 
 
 class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
     def __init__(self, left, l_sys, r_sys, answer):
         super().__init__()
-        text = self.genSol(left, l_sys, r_sys)
-        self.setupUi(self, to_10.format(
-            left=left, solution=text, answer=answer))
         self.solution = ""
-        self.answer = ""
-
+        self.answer = answer
+        self.genSol(left, l_sys, r_sys)
+        self.setupUi(self)
+    
     def genSol(self, left, l_sys, r_sys):
+        def parse_sixt_words():
+            nums=[]
+            for char in str(left)[::-1]:
+                if char.isnumeric():
+                    nums.append(char)                    
+                for num in range(10, 16):
+                    if chr(87 + num) == char:
+                        nums.append(num)
+            return nums
         if r_sys == 10:
             if l_sys == 2 or l_sys == 8:
                 left = str(left)[::-1]
@@ -56,7 +62,33 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
                 for i in range(1, len(str(left))):
                     self.solution += " + {rank}*{l_sys}^{degree}".format(
                         rank=left[i], l_sys=l_sys, degree=i)
-        return self.solution
+            if l_sys == 16:
+                parsed = parse_sixt_words()
+                self.solution = "{first_rank}*{l_sys}^0".format(
+                    first_rank=parsed[0], l_sys=l_sys)
+                for i in range(1, len(parsed)):
+                    self.solution += " + {rank}*{l_sys}^{degree}".format(
+                            rank=parsed[i], l_sys=l_sys, degree=i)
+            self.solution = to_10.format(left = left, solution = self.solution,
+                                         answer = self.answer)
+        if r_sys == 8:
+            if l_sys == 2:
+                temp_left = str(left)[::-1]
+                if (len(temp_left) % 3) - 1 == 0:
+                    temp_left += "00"
+                if (len(temp_left) % 3) - 2 == 0:
+                    temp_left += "0"
+                self.solution = temp_left[:3]
+                temp_left = temp_left[3:]
+                while len(temp_left) > 0:
+                    self.solution += "|" + temp_left[:3]
+                    temp_left = temp_left[3:]
+                self.solution = self.solution[::-1]
+        self.solution = from_2_to_8.format(left = left, solution = self.solution,
+                                         answer = self.answer)
+                
+                 
+        
 
 
 def main():
