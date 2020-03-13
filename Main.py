@@ -43,13 +43,13 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
         self.answer = answer
         self.genSol(left, l_sys, r_sys)
         self.setupUi(self)
-    
+
     def genSol(self, left, l_sys, r_sys):
         def parse_sixt_words():
-            nums=[]
+            nums = []
             for char in str(left)[::-1]:
                 if char.isnumeric():
-                    nums.append(char)                    
+                    nums.append(char)
                 for num in range(10, 16):
                     if chr(87 + num) == char:
                         nums.append(num)
@@ -68,27 +68,36 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
                     first_rank=parsed[0], l_sys=l_sys)
                 for i in range(1, len(parsed)):
                     self.solution += " + {rank}*{l_sys}^{degree}".format(
-                            rank=parsed[i], l_sys=l_sys, degree=i)
-            self.solution = to_10.format(left = left, solution = self.solution,
-                                         answer = self.answer)
+                        rank=parsed[i], l_sys=l_sys, degree=i)
+            self.solution = to_10.format(left=left, solution=self.solution,
+                                         answer=self.answer)
+            return
+        if l_sys == 10:
+            temp_left = left
+            while temp_left >= r_sys:
+                self.solution += "\n{left}/{r_sys}={quotient}({remainder})".format(
+                    left=temp_left, r_sys=r_sys, quotient=temp_left//r_sys, remainder=temp_left % r_sys)
+                temp_left = temp_left//r_sys
+            self.solution += "\n({remainder})\n".format(remainder=temp_left)
+            self.solution = from_10.format(left=left, solution=self.solution,
+                                           answer=self.answer)
+            return
+        if l_sys == 16 and r_sys == 2 or r_sys == 8:
+#                for char in str(left)[::-1]:
+#                    if char.isnumeric():
+#                       self.solution += "000" + char
+            return
         if r_sys == 8:
             if l_sys == 2:
                 temp_left = str(left)[::-1]
-                if (len(temp_left) % 3) - 1 == 0:
-                    temp_left += "00"
-                if (len(temp_left) % 3) - 2 == 0:
-                    temp_left += "0"
                 self.solution = temp_left[:3]
                 temp_left = temp_left[3:]
                 while len(temp_left) > 0:
                     self.solution += "|" + temp_left[:3]
                     temp_left = temp_left[3:]
                 self.solution = self.solution[::-1]
-        self.solution = from_2_to_8.format(left = left, solution = self.solution,
-                                         answer = self.answer)
-                
-                 
-        
+                self.solution = from_2_to_8.format(left=left, solution=self.solution,
+                                                   answer=self.answer)
 
 
 def main():
