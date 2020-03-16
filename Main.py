@@ -82,13 +82,66 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
             self.solution = from_10.format(left=left, solution=self.solution,
                                            answer=self.answer)
             return
-        if l_sys == 16 and r_sys == 2 or r_sys == 8:
-#                for char in str(left)[::-1]:
-#                    if char.isnumeric():
-#                       self.solution += "000" + char
+        if l_sys == 16 and (r_sys == 2 or r_sys == 8):
+            blocks = []
+            for char in left:
+                if char.isalpha() or int(char) >= 8:
+                    blocks.append(bin(int(char, base=16)).replace("0b", ""))
+                if char.isnumeric() and int(char) < 8 and int(char) >= 4:
+                    blocks.append(
+                        "0" + bin(int(char, base=16)).replace("0b", ""))
+                if char.isnumeric() and (int(char) == 3 or int(char) == 2):
+                    blocks.append(
+                        "00" + bin(int(char, base=16)).replace("0b", ""))
+                if char.isnumeric() and (int(char) == 0 or int(char) == 1):
+                    blocks.append("000" + char)
+            self.solution += "|".join(blocks)
+            if r_sys == 2:
+                self.solution = from_16_to_2.format(left=left, solution=self.solution,
+                                                    answer=self.answer)
+            if r_sys == 8:
+                blocks_str = "".join([p[::-1] for p in blocks[::-1]])
+                blocks_str = blocks_str[::-1]
+                if len(blocks_str) % 3 == 1:
+                    blocks_str = "00" + blocks_str
+                if len(blocks_str) % 3 == 2:
+                    blocks_str = "0" + blocks_str
+                blocks = [blocks_str[x:x+3]
+                          for x in range(0, len(blocks_str), 3)]
+                self.solution += "={}".format("|".join(blocks))
+                self.solution = from_16_to_8.format(left=left, solution=self.solution,
+                                                    answer=self.answer)
             return
-        if r_sys == 8:
-            if l_sys == 2:
+        if l_sys == 8 and (r_sys == 2 or r_sys == 16):
+            blocks = []
+            for char in str(left):
+                if int(char) < 8 and int(char) >= 4:
+                    blocks.append(bin(int(char)).replace("0b", ""))
+                if int(char) == 3 or int(char) == 2:
+                    blocks.append("0" + bin(int(char)).replace("0b", ""))
+                if int(char) == 0 or int(char) == 1:
+                    blocks.append("00" + char)
+            self.solution += "|".join(blocks)
+            if r_sys == 2:
+                self.solution = from_8_to_2.format(left=left, solution=self.solution,
+                                                   answer=self.answer)
+            if r_sys == 16:
+                blocks_str = "".join([p[::-1] for p in blocks[::-1]])
+                blocks_str = blocks_str[::-1]
+                if len(blocks_str) % 4 == 1:
+                    blocks_str = "000" + blocks_str
+                if len(blocks_str) % 4 == 2:
+                    blocks_str = "00" + blocks_str
+                if len(blocks_str) % 4 == 3:
+                    blocks_str = "0" + blocks_str
+                blocks = [blocks_str[x:x+4]
+                          for x in range(0, len(blocks_str), 4)]
+                self.solution += "={}".format("|".join(blocks))
+                self.solution = from_8_to_16.format(left=left, solution=self.solution,
+                                                    answer=self.answer)
+                return
+        if l_sys == 2:
+            if r_sys == 8:
                 temp_left = str(left)[::-1]
                 self.solution = temp_left[:3]
                 temp_left = temp_left[3:]
@@ -98,6 +151,17 @@ class HelpForm(QtWidgets.QMainWindow, HelpWindow.Ui_MainWindow2):
                 self.solution = self.solution[::-1]
                 self.solution = from_2_to_8.format(left=left, solution=self.solution,
                                                    answer=self.answer)
+            if r_sys == 16:
+                temp_left = str(left)[::-1]
+                self.solution = temp_left[:4]
+                temp_left = temp_left[4:]
+                while len(temp_left) > 0:
+                    self.solution += "|" + temp_left[:4]
+                    temp_left = temp_left[4:]
+                self.solution = self.solution[::-1]
+                self.solution = from_2_to_16.format(left=left, solution=self.solution,
+                                                    answer=self.answer)
+            return
 
 
 def main():
@@ -110,11 +174,10 @@ def main():
 
 class Functional:
     @staticmethod
-    def generate():
-        num = random.randint(0, 255)
-        mas = [2, 8, 10, 16]
-        l_sys = random.choice(mas)
-        r_sys = random.choice(list(set(mas) - {l_sys}))
+    def generate(systems=[2, 8, 10, 16]):
+        num = random.randint(10, 255)
+        l_sys = random.choice(systems)
+        r_sys = random.choice(list(set(systems) - {l_sys}))
         return Functional.to_sys(num, l_sys), l_sys, Functional.to_sys(num, r_sys), r_sys
 
     @staticmethod

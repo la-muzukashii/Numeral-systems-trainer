@@ -52,6 +52,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+#        self.systems = QtWidgets.QMenu(MainWindow)
+#        self.systems.setObjectName("Выбор систем")
+#        self.systems.setEnabled(True)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
