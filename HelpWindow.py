@@ -1,26 +1,20 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets  # импорт всего необходимого из модуля
+
 
 class Ui_MainWindow2(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Help Window")
-        
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.body_text = QtWidgets.QLabel(self.centralwidget)
-        self.body_text.setMargin(50)
-        self.body_text.setFont(font)
-        self.body_text.setObjectName("body_text")
+    def setupUi(self, HelpWindow):
+        HelpWindow.resize(700, 350)  # определение размера окна
+        self.centralwidget = QtWidgets.QWidget(HelpWindow)  # создание места, где всё будет размещено – центрального виджета
+        HelpWindow.setCentralWidget(self.centralwidget)  # присвоение центрального виджета главному окну
+        font = QtGui.QFont("Roboto", 12)  # определение шрифта и его размера
 
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        
-        MainWindow.resize(1000, 350)
+        self.help_label = QtWidgets.QLabel(self.centralwidget)  # создание строки для алгоритма и решения
+        self.help_label.setMargin(50)  # создание отступов строки сверху и снизу
+        self.help_label.setFont(font)  # определение шрифта строки
 
+        self.retranslateUi(HelpWindow)  # вызов функции, отображающей все постоянные данные
 
-
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, HelpWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("Help Window", "Help Window"))
+        HelpWindow.setWindowTitle(_translate("HelpWindow", "Помощь"))  # отображение названия окна
+        # все остальные данные будут меняться в ходе работы программы
